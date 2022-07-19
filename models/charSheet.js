@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 
 const charSheetSchema = new mongoose.Schema({
   name: String,
+  align: String,
   race:String,
   class:String,
   level: Number,
