@@ -1,15 +1,21 @@
 import { Router } from 'express'
-import * as authCtrl from '../controllers/auth.js'
+
 import { decodeUserFromToken, checkAuth } from '../middleware/auth.js'
-import CharSheetCtrl from '../controllers/charSheet.js'
+import * as charSheetCtrl from '../controllers/charSheet.js'
+
 const router = Router()
 
 /*---------- Public Routes ----------*/
-router.get('/', charSheetCtrl.index)
-router.get('/new', charSheetCtrl.new)
-router.get('/:id', charSheetCtrl.show)
-router.post('/', charSheetCtrl.create)
+
 /*---------- Protected Routes ----------*/
+router.use( decodeUserFromToken )
+router.get( '/', charSheetCtrl.index )
+router.post('/',checkAuth, charSheetCtrl.create)
+router.delete('/:id', checkAuth, charSheetCtrl.delete)
+router.put('/:id', checkAuth, charSheetCtrl.update)
 
 
 export { router }
+
+// router.get('/new', charSheetCtrl.new)
+// router.get('/:id', charSheetCtrl.show)

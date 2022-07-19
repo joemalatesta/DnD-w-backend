@@ -1,20 +1,23 @@
 import { CharSheet } from '../models/charSheet.js'
 
-function create(req, res) {
-  req.body.owner = req.user.profile
-  CharSheet.create(req.body)
-  .then(char => {
-    Char.findById(char._id)
-    .then(populatedChar=> {
-      res.json(populatedChar)
-    })
-  })
-  .catch(err => {
-    console.log(err)
-    res.status(500).json({err: err.errmsg})
-  })
-}
+// function new (req,res) {
+//   res.redirect('/new')
+// }
 
+// function create(req, res) {
+//   req.body.owner = req.user.profile
+//   CharSheet.create(req.body)
+//   .then(char => {
+//     Char.findById(char._id)
+//     .then(populatedChar=> {
+//       res.json(populatedChar)
+//     })
+//   })
+//   .catch(err => {
+//     console.log(err)
+//     res.status(500).json({err: err.errmsg})
+//   })
+// }
 
 function index(req, res) {
   CharSheet.find({})
@@ -25,7 +28,66 @@ function index(req, res) {
   })
 }
 
+function create(req, res) {
+  req.body.owner = req.user.profile
+  console.log(req.body);
+  CharSheet.create(req.body)
+  .then(char => {
+    CharSheet.findById(char._id)
+    .populate('owner')
+    .then(populatedCharSheet => {
+      res.json(populatedCharSheet)
+    })
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+
+function deleteOne(req, res) {
+  CharSheet.findById(req.params.id)
+  .then(char => {
+    if (char.owner._id.equals(req.user.profile)) {
+      CharSheet.findByIdAndDelete(char._id)
+      .then(deletedCharSheet => {
+
+        res.json(deletedCharSheet)
+      })
+    } else {
+
+      res.status(401).json({err: "Not authorized!"})
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
+function update(req, res) {
+  CharSheet.findById(req.params.id)
+  .then(char => {
+    if (char.owner._id.equals(req.user.profile)) {
+      CharSheet.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      .populate('owner')
+      .then(updatedCharSheet => {
+        res.json(updatedCharSheet)
+      })
+    } else {
+      res.status(401).json({err: "Not authorized!"})
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({err: err.errmsg})
+  })
+}
+
 export { 
+  index, 
   create,
-  index 
+  deleteOne as delete,
+  update
 }

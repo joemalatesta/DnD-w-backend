@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { Profile } from './profile'
 
 const charSheetSchema = new mongoose.Schema({
   name: String,
@@ -14,11 +13,13 @@ const charSheetSchema = new mongoose.Schema({
   cha: Number,
   armorclass: Number,
   inv: [String],
-  owner: (ObjectId) ,
+  owner: {type: mongoose.Schema.Types.ObjectId, ref: "Profile"} ,
 },{
     timestamps: true,
 })
 
 const CharSheet = mongoose.model('CharSheet', charSheetSchema)
 
-export {CharSheet}
+export {
+  CharSheet
+}
