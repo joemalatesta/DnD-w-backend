@@ -9,6 +9,16 @@ function index(req, res) {
   })
 }
 
+function myIndex(req, res) {
+  req.body.owner = req.user.profile
+  CharSheet.find({owner:req.user.profile}) 
+  .then(sheet=>res.json(sheet))
+  .catch(err => {
+    console.log(err)
+    res.status(500).json(err)
+  })
+}
+
 function create(req, res) {
   req.body.owner = req.user.profile
   console.log(req.body);
@@ -67,7 +77,8 @@ function update(req, res) {
 }
 
 export { 
-  index, 
+  index,
+  myIndex,
   create,
   deleteOne as delete,
   update
