@@ -2,6 +2,7 @@ import { CharSheet } from '../models/charSheet.js'
 
 function index(req, res) {
   CharSheet.find({})
+  .populate('owner')
   .then(chars => res.json(chars))
   .catch(err => {
     console.log(err)
@@ -11,7 +12,8 @@ function index(req, res) {
 
 function myIndex(req, res) {
   req.body.owner = req.user.profile
-  CharSheet.find({owner:req.user.profile}) 
+  CharSheet.find({owner:req.user.profile})
+  .populate('owner')
   .then(sheet=>res.json(sheet))
   .catch(err => {
     console.log(err)
