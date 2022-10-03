@@ -15,6 +15,8 @@ const charSheetSchema = new mongoose.Schema({
   cha: Number,
   armorclass: Number,
   experience: Number,
+  hitDie: Number,
+  hitPoints: Number,
   inv: [String],
   owner: {type: mongoose.Schema.Types.ObjectId, ref: "Profile"} ,
 },{
